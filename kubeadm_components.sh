@@ -4,6 +4,7 @@ DOCKERHUB_REPO_NAME=solomonlinux
 #source kubeadm_pods.txt
 IMAGE_LIST_FILE=kubeadm_components.txt
 
+set -e
 
 # 安装依赖的软件包
 app_install(){
