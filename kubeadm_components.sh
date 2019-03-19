@@ -34,6 +34,8 @@ git_init(){
 }
 
 git_commit(){
+	echo kubernetes-${VERSION}-master-components.tar.gz > .gitignore
+	echo kubernetes-${VERSION}-node-components.tar.gz > .gitignore
 	local COMMIT_FILES_COUNT=$(git status -s | wc -l)
 	local TODAY=$(date "+%F %T")
 	if [ $COMMIT_FILES_COUNT -gt 0 ]; then
