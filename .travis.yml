@@ -16,6 +16,8 @@ install:
 script:
 - "bash ./kubeadm_components.sh"
 before_install:
+- sudo git lfs install
+- sudo git lfs track "*.tar.gz"
 - sudo apt-get -y install bash
 - sudo apt-get -y install coreutils
 - mkdir -p ~/.ssh
