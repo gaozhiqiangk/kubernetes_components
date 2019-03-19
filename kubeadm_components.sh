@@ -18,7 +18,8 @@ git_lfs_init(){
 }
 
 git_init(){
-	git config --global user.name "gaozhiqiang"
+	#git config --global user.name "gaozhiqiang"
+	git config --global user.name "solomonlinux"
 	git config --global user.email "1211348968@qq.com"
 	git remote remove origin
 	git remote add origin git@github.com:solomonlinux/kubernetes_components.git
