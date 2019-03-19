@@ -14,7 +14,7 @@ branches:
 install:
 - git remote -v
 script:
-- "bash ./kubeadm_pods.sh"
+- "bash ./kubeadm_components.sh"
 before_install:
 #- sudo git lfs install
 #- sudo git lfs track "*.tar.gz"
