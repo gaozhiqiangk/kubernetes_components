@@ -29,16 +29,24 @@ git_init(){
 }
 
 git_commit(){
-	git status -s | wc -l
+	local COMMIT_FILES_COUNT=$(git status -s | wc -l)
+	local TODAY=$(date +%F %T)
+	if [ $COMMIT_FILES_COUNT -gt 0 ]; then
+		git add -A
+		git commit -m "Synchronizing completion at $TODAY"
+		git push -u origin develop
+	fi
 }
 
 pull_images(){
 	echo
-	for IMAGE $MASTER_COMPONENTS; do
+	for IMAGE in $MASTER_COMPONENTS; do
 		docker pull $IMAGE
 	done
 	docker save -o kubernetes-${VERSION}-master-components.tar.gz $MASTER_COMPONENTS
 	docker save -o kubernetes-${VERSION}-node-components.tar.gz $NODE_COMPONENTS
+	mv kubernetes-${VERSION}-master-components.tar.gz images/
+	mv kubernetes-${VERSION}-node-components.tar.gz images/
 }
 
 main(){
