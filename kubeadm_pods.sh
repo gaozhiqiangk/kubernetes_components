@@ -74,16 +74,24 @@ image_tag_check(){
 # 检查我自己的仓库是否有镜像,有就算了,没有就拉取并改名上传至自己的仓库
 # xxx为镜像列表
 pull_image(){
-
 	while read IMAGE TAG; do
 		echo "$IMAGE ---- $TAG"
 		local DEST_IMAGE=$(image_tag_convert ${IMAGE}:${TAG})
 		image_tag_check ${IMAGE} ${TAG}
 		if [ $? -ne 0 ]; then
+			echo "${IMAGE}:${TAG}镜像正在被拉取"
 			docker pull ${IMAGE}:${TAG}
 			docker push ${DOCKERHUB_REPO_NAME}/${IMAGE#*/}:${TAG}
+			[ $? -eq 0 ] && echo "${IMAGE}:${TAG}镜像已经上传至本地仓库"
+		else
+			echo "${IMAGE}:${TAG}镜像已存在"
 		fi
-	done < <( cat $IMAGE_LIST_FILE | grep -v "^$" | awk -F: '/:/{print $1,$2}' )
+	# 'xyz		xyz
+	# ab		ab
+	# cde		cde
+	# xyz'		xyz
+	# cat test | tr "'" "\n" | grep -v "^$" | sort | uniq
+	done < <( cat $IMAGE_LIST_FILE | tr "'" "\n" | grep -v "^$" | awk -F: '/:/{print $1,$2}' )
 }
 
 main(){
@@ -94,4 +102,5 @@ main(){
 }
 
 # 我使用git lfs报错,而且它的容量为1G,因为我想通过脚本来实现我的仓库里必须有对应的镜像存在,并且在使用时通过脚本能够快速拉取所需镜像
+# 脚本还不够健壮,对于docker官方提供的镜像就没辙了,但是确实也不应该使用这个脚本这么干,太缺德了
 main
