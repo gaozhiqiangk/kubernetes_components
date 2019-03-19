@@ -12,6 +12,10 @@ k8s.gcr.io/pause:3.1'
 NODE_COMPONENTS='k8s.gcr.io/kube-proxy:v1.12.2
 quay.io/coreos/flannel:v0.10.0-amd64
 k8s.gcr.io/pause:3.1'
+git_lfs_init(){
+	git lfs install
+	git lfs track "*.tar.gz"
+}
 
 git_init(){
 	git config --global user.name "gaozhiqiang"
@@ -50,6 +54,7 @@ pull_images(){
 }
 
 main(){
+	git_lfs_init
 	git_init
 	pull_images
 	git_commit
