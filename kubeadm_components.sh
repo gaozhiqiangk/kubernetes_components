@@ -63,10 +63,10 @@ image_tag_convert(){
 # 返回值为0表示镜像存在,为1表示镜像不存在
 # $1: image_name; $2: image_tag_name
 image_tag_check(){
-	echo $1 --------
-	echo $2 ---------
+	#echo $1 --------
+	#echo $2 ---------
         local RESULT=$(curl -s https://hub.docker.com/v2/repositories/${DOCKERHUB_REPO_NAME}/$1/tags/$2/ | jq -r .name)
-	echo "null"-----------------------------------------
+	#echo "null"-----------------------------------------
 	if [[ $RESULT == 'null' ]]; then
 		echo failure
 	else
