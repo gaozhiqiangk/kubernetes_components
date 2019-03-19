@@ -65,9 +65,9 @@ image_tag_convert(){
 image_tag_check(){
         local RESULT=$(curl -s https://hub.docker.com/v2/repositories/${DOCKERHUB_REPO_NAME}/$1/tags/$2/ | jq -r .name)
 	if [[ $RESULT == 'null' ]]; then
-		return 1
+		echo failure
 	else
-		return 0
+		echo ok
 	fi
 }
 
@@ -78,8 +78,8 @@ pull_image(){
 	while read IMAGE TAG; do
 		local SRC_IMAGE=${IMAGE}:${TAG}
 		local DEST_IMAGE=$(image_tag_convert ${SRC_IMAGE})
-		image_tag_check ${IMAGE##*/} ${TAG}
-		if [ $? -ne 0 ]; then
+		local STATUS=image_tag_check ${IMAGE##*/} ${TAG}
+		if [ $STATUS == 'failure' ]; then
 			echo "${IMAGE}:${TAG}镜像正在被拉取"
 			docker pull $SRC_IMAGE
 			docker tag $SRC_IMAGE $DEST_IMAGE
