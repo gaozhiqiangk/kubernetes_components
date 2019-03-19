@@ -63,7 +63,10 @@ image_tag_convert(){
 # 返回值为0表示镜像存在,为1表示镜像不存在
 # $1: image_name; $2: image_tag_name
 image_tag_check(){
+	echo $1 --------
+	echo $2 ---------
         local RESULT=$(curl -s https://hub.docker.com/v2/repositories/${DOCKERHUB_REPO_NAME}/$1/tags/$2/ | jq -r .name)
+	echo "null"-----------------------------------------
 	if [[ $RESULT == 'null' ]]; then
 		echo failure
 	else
@@ -81,9 +84,9 @@ pull_image(){
 		local STATUS=$(image_tag_check ${IMAGE##*/} ${TAG})
 		if [ $STATUS == 'failure' ]; then
 			echo "${IMAGE}:${TAG}镜像正在被拉取"
-			docker pull $SRC_IMAGE
-			docker tag $SRC_IMAGE $DEST_IMAGE
-			docker push $DEST_IMAGE
+			docker pull $SRC_IMAGE &> /dev/null
+			docker tag $SRC_IMAGE $DEST_IMAGE &> /dev/null
+			docker push $DEST_IMAGE &> /dev/null
 			[ $? -eq 0 ] && echo "${SRC_IMAGE}镜像已经上传至本地仓库"
 		else
 			echo "${SRC_IMAGE}镜像已存在"
