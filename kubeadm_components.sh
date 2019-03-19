@@ -63,7 +63,7 @@ image_tag_convert(){
 # $1: image_name; $2: image_tag_name
 image_tag_check(){
         local RESULT=$(curl -s https://hub.docker.com/v2/repositories/${DOCKERHUB_REPO_NAME}/$1/tags/$2/ | jq -r .name)
-	if [ $RESULT == null ]; then
+	if [[ $RESULT == 'null' ]]; then
 		return 1
 	else
 		return 0
@@ -75,16 +75,17 @@ image_tag_check(){
 # xxx为镜像列表
 pull_image(){
 	while read IMAGE TAG; do
-		echo "$IMAGE ---- $TAG"
-		local DEST_IMAGE=$(image_tag_convert ${IMAGE}:${TAG})
+		local SRC_IMAGE=${IMAGE}:${TAG}
+		local DEST_IMAGE=$(image_tag_convert ${SRC_IMAGE})
 		image_tag_check ${IMAGE} ${TAG}
 		if [ $? -ne 0 ]; then
 			echo "${IMAGE}:${TAG}镜像正在被拉取"
-			docker pull ${IMAGE}:${TAG}
-			docker push ${DOCKERHUB_REPO_NAME}/${IMAGE#*/}:${TAG}
-			[ $? -eq 0 ] && echo "${IMAGE}:${TAG}镜像已经上传至本地仓库"
+			docker pull $SRC_IMAGE
+			docker tag $SRC_IMAGE $DEST_IMAGE
+			docker push $DEST_IMAGE
+			[ $? -eq 0 ] && echo "${SRC_IMAGE}镜像已经上传至本地仓库"
 		else
-			echo "${IMAGE}:${TAG}镜像已存在"
+			echo "${SRC_IMAGE}镜像已存在"
 		fi
 	# 'xyz		xyz
 	# ab		ab
