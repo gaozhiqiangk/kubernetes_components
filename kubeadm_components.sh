@@ -81,7 +81,7 @@ pull_image(){
 	while read IMAGE TAG; do
 		local SRC_IMAGE=${IMAGE}:${TAG}
 		local DEST_IMAGE=$(image_tag_convert ${SRC_IMAGE})
-		local STATUS=$(image_tag_check "${IMAGE#*/} | tr '/' '.'" ${TAG})
+		local STATUS=$(image_tag_check "${IMAGE#*/} | tr '/' '.'") ${TAG}
 		if [ $STATUS == 'failure' ]; then
 			echo "${IMAGE}:${TAG}镜像正在被拉取"
 			docker pull $SRC_IMAGE &> /dev/null
