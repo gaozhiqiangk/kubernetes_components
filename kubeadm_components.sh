@@ -13,13 +13,13 @@ NODE_COMPONENTS='k8s.gcr.io/kube-proxy:v1.12.2
 quay.io/coreos/flannel:v0.10.0-amd64
 k8s.gcr.io/pause:3.1'
 git_lfs_init(){
-	git lfs install
+	git lfs install --force
 	git lfs track "*.tar.gz"
 }
 
 git_init(){
 	git config --global user.name "gaozhiqiang"
-	git config --golbal user.email "1211348968@qq.com"
+	git config --global user.email "1211348968@qq.com"
 	git remote remove origin
 	git remote add origin git@github.com:solomonlinux/kubernetes_components.git
 	if git branch -a | grep 'origin/develop' &> /dev/null; then
