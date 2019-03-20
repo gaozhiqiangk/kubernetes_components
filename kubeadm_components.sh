@@ -48,7 +48,7 @@ git_commit(){
 # $1为用户提供的镜像名称,如k8s.gcr.io/kube-proxy:v1.12.2
 image_tag_convert(){
 	local SRC_IMAGE=$1
-	local DEST_IMAGE="${DOCKERHUB_REPO_NAME}/${SRC_IMAGE} | tr '/' '.'"
+	local DEST_IMAGE="${DOCKERHUB_REPO_NAME}/$(echo ${SRC_IMAGE} | tr '/' '.')"
 	echo $DEST_IMAGE
 }
 
@@ -67,10 +67,10 @@ image_tag_check(){
 
 sync_image(){
 	while read IMGTAG; do
-		SRC_IMAGE=$IMGTAG
-		DEST_IMAGE=$(image_tag_convert $SRC_IMAGE)
-		IMAGE=$(echo $SRC_IMAGE | awk -F: '{print $1}')
-		TAG=$(echo $SRC_IMAGE | awk -F: '{print $1}')
+		local SRC_IMAGE=$IMGTAG
+		local DEST_IMAGE=$(image_tag_convert $SRC_IMAGE)
+		local IMAGE=$(echo $SRC_IMAGE | awk -F: '{print $1}')
+		local TAG=$(echo $SRC_IMAGE | awk -F: '{print $1}')
 		
 		if [ ! image_tag_check $IMAGE $TAG ]; then
 			docker pull $SRC_IMAGE &> /dev/null
