@@ -72,7 +72,7 @@ sync_image(){
 		local IMAGE=$(echo $DEST_IMAGE | cut -d/ -f2 | cut -d: -f1)
 		local TAG=$(echo $DEST_IMAGE | cut -d: -f2)
 		
-		if [ ! image_tag_check $IMAGE $TAG ]; then
+		if [[ ! image_tag_check $IMAGE $TAG ]]; then
 			docker pull $SRC_IMAGE &> /dev/null
 			docker tag $SRC_IMAGE $DEST_IMAGE &> /dev/null
 			docker push $DEST_IMAGE &> /dev/null
