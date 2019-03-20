@@ -44,13 +44,13 @@ image_tag_convert(){
 	local SRC_IMAGE=$1
 	local DOMAIN=${SRC_IMAGE%%/*}
 	if [ $DOMAIN == "k8s.gcr.io" ]; then
-        	DEST_IMAGE=${DOCKERHUB_REPO_NAME}/`echo ${SRC_IMAGE#*.} | tr / .`
+        	DEST_IMAGE="${DOCKERHUB_REPO_NAME}/`echo ${SRC_IMAGE#*.} | tr / .`"
 		echo $DEST_IMAGE
 	elif [ $DOMAIN == 'gcr.io' ]; then
-        	DEST_IMAGE=${DOCKERHUB_REPO_NAME}/`echo ${SRC_IMAGE} | tr / .`
+        	DEST_IMAGE="${DOCKERHUB_REPO_NAME}/`echo ${SRC_IMAGE} | tr / .`"
 		echo $DEST_IMAGE
 	elif [ $DOMAIN == 'quay.io' ]; then
-        	DEST_IMAGE=${DOCKERHUB_REPO_NAME}/`echo $SRC_IMAGE | tr / .`
+        	DEST_IMAGE="${DOCKERHUB_REPO_NAME}/`echo $SRC_IMAGE | tr / .`"
 		echo $DEST_IMAGE
 	else
         	DEST_IMAGE=$SRC_IMAGE
