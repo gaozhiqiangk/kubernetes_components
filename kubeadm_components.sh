@@ -59,9 +59,9 @@ image_tag_convert(){
 image_tag_check(){
         local RESULT=$(curl -s https://hub.docker.com/v2/repositories/${DOCKERHUB_REPO_NAME}/$1/tags/$2/ | jq -r .name)
 	if [ "$RESULT" == "null" ]; then
-		return 1
+		echo failure
 	else
-		return 0
+		echo ok
 	fi
 }
 
@@ -72,7 +72,7 @@ sync_image(){
 		local IMAGE=$(echo $DEST_IMAGE | cut -d/ -f2 | cut -d: -f1)
 		local TAG=$(echo $DEST_IMAGE | cut -d: -f2)
 		
-		if [[ ! image_tag_check $IMAGE $TAG ]]; then
+		if [[ $(image_tag_check $IMAGE $TAG) == "failure" ]]; then
 			docker pull $SRC_IMAGE &> /dev/null
 			docker tag $SRC_IMAGE $DEST_IMAGE &> /dev/null
 			docker push $DEST_IMAGE &> /dev/null
