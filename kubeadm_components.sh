@@ -59,25 +59,28 @@ image_tag_convert(){
 image_tag_check(){
         local RESULT=$(curl -s https://hub.docker.com/v2/repositories/${DOCKERHUB_REPO_NAME}/$1/tags/$2/ | jq -r .name)
 	if [ "$RESULT" == "null" ]; then
-		echo failure
+		return 1
 	else
-		echo ok
+		return 0
 	fi
 }
 
 sync_image(){
-	while read IMAGE TAG; do
-		SRC_IMAGE=${IMAGE}:${TAG}
+	while read IMGTAG; do
+		SRC_IMAGE=$IMGTAG
 		DEST_IMAGE=$(image_tag_convert $SRC_IMAGE)
-		if [ $(image_tag_check $IMAGE $TAGE) == "failure" ]; then
+		IMAGE=$(echo $SRC_IMAGE | awk -F: '{print $1}')
+		TAG=$(echo $SRC_IMAGE | awk -F: '{print $1}')
+		
+		if [ ! image_tag_check $IMAGE $TAG ]; then
 			docker pull $SRC_IMAGE &> /dev/null
 			docker tag $SRC_IMAGE $DEST_IMAGE &> /dev/null
 			docker push $DEST_IMAGE &> /dev/null
 			[ $? -eq 0 ] && echo "${SRC_IMAGE}已同步完成"
 		else
 			echo "${SRC_IMAGE}镜像已存在,不需要再次同步"
-		fi
-	done < <( cat $IMAGE_LIST_FILE | tr "'" "\n" | grep -v "^$" | awk -F: '/:/{print $1,$2}' )
+		fi	
+	done < <( cat $IMAGE_LIST_FILE )
 }
 
 main(){
