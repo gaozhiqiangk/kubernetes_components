@@ -69,8 +69,8 @@ sync_image(){
 	while read IMGTAG; do
 		local SRC_IMAGE=$IMGTAG
 		local DEST_IMAGE=$(image_tag_convert $SRC_IMAGE)
-		local IMAGE=$(echo $SRC_IMAGE | awk -F: '{print $1}' | tr / .)
-		local TAG=$(echo $SRC_IMAGE | awk -F: '{print $2}')
+		local IMAGE=$(echo $DEST_IMAGE | cut -d/ -f2 | cut -d: -f1)
+		local TAG=$(echo $DEST_IMAGE | cut -d: -f2)
 		
 		if [ ! image_tag_check $IMAGE $TAG ]; then
 			docker pull $SRC_IMAGE &> /dev/null
