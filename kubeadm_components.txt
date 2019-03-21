@@ -9,3 +9,5 @@ quay.io/coreos/flannel:v0.10.0-amd64
 k8s.gcr.io/pause:3.1
 
 # v1.13.0
+
+gcr.io/kubernetes-e2e-test-images.n-way-http-ppc64le:1.0
