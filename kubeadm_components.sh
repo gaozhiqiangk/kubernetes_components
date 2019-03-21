@@ -85,7 +85,7 @@ sync_image(){
 		else
 			echo -e "镜像(\033[32m${SRC_IMAGE}\033[0m)已存在"
 		fi	
-	done < <( cat $IMAGE_LIST_FILE | grep -v "^#" | grep -v "^$" )
+	done < <( cat $IMAGE_LIST_FILE | grep -v "^#" | grep -v "^$" | sort | uniq )
 }
 
 main(){
