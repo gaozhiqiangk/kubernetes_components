@@ -52,25 +52,21 @@ image_tag_convert(){
 	echo $DEST_IMAGE
 }
 
-# 用于检查我自己的仓库是否存在镜像
-# $1为镜像名称,如nginx,$2为镜像标签,如v1-test
-# 返回值为0表示镜像存在,为1表示镜像不存在
-# $1: image_name; $2: image_tag_name
-
 # 参数: $1为我本地镜像仓库的镜像名称,如solomonlinux/nginx:v1-test的nginx
 # 参数: $2为我本地镜像仓库镜像的标签,如solomonlinux/nginx:v1-test的v1-test
-
+# 返回值: 1表示镜像镜像未安装
+# 返回值: 0表示镜像已安装
+# 作用: 检查本地是否存在镜像
 image_tag_check(){
         local RESULT=$(curl -s https://hub.docker.com/v2/repositories/${DOCKERHUB_REPO_NAME}/$1/tags/$2/ | jq -r .name)
 	if [ "$RESULT" == "null" ]; then
-		#echo failure
 		return "1"
 	else
-		#echo ok
 		return "0"
 	fi
 }
 
+# 作用: 同步镜像,从文件中取得数据
 sync_image(){
 	while read IMGTAG; do
 		local SRC_IMAGE=$IMGTAG
@@ -80,14 +76,17 @@ sync_image(){
 		
 		#if [[ $(image_tag_check $IMAGE $TAG) == "failure" ]]; then
 		if ! $(image_tag_check $IMAGE $TAG); then
+			echo "正在同步镜像($SRC_IMAGE)......"
 			docker pull $SRC_IMAGE &> /dev/null
 			docker tag $SRC_IMAGE $DEST_IMAGE &> /dev/null
+			docker rmi $SRC_IMAGE &> /dev/null
 			docker push $DEST_IMAGE &> /dev/null
-			[ $? -eq 0 ] && echo "${SRC_IMAGE}已同步完成"
+			docker rmi $DEST_IMAGE &> /dev/null
+			[ $? -eq 0 ] && echo "镜像(${SRC_IMAGE})已同步完成"
 		else
-			echo "${SRC_IMAGE}镜像已存在,不需要再次同步"
+			echo "镜像(${SRC_IMAGE})已存在"
 		fi	
-	done < <( cat $IMAGE_LIST_FILE | grep -v "^#" )
+	done < <( cat $IMAGE_LIST_FILE | grep -v "^#" | grep -v "^$" )
 }
 
 main(){
@@ -98,7 +97,6 @@ main(){
 }
 
 main
-
 
 # 'xyz		xyz
 # ab		ab
