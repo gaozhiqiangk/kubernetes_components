@@ -79,7 +79,7 @@ sync_image(){
 		local TAG=$(echo $DEST_IMAGE | cut -d: -f2)
 		
 		#if [[ $(image_tag_check $IMAGE $TAG) == "failure" ]]; then
-		if [[ $(image_tag_check $IMAGE $TAG) -eq 1 ]]; then
+		if [[ "$(image_tag_check $IMAGE $TAG)" -eq 1 ]]; then
 			docker pull $SRC_IMAGE &> /dev/null
 			docker tag $SRC_IMAGE $DEST_IMAGE &> /dev/null
 			docker push $DEST_IMAGE &> /dev/null
