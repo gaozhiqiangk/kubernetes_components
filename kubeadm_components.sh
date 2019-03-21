@@ -5,7 +5,7 @@ IMAGE_LIST_FILE=kubeadm_components.txt
 
 set -e
 
-# 安装依赖的软件包
+# 作用: 安装依赖的软件包
 app_install(){
 	if ! which jq &> /dev/null; then
 		if ls /etc/ | grep 'redhat-release' &> /dev/null; then 
@@ -17,7 +17,7 @@ app_install(){
 	fi
 }
 
-# github仓库初始化
+# 作用: github仓库初始化
 git_init(){
 	git config --global user.name "gaozhiqiang"
 	git config --global user.email "1211348968@qq.com"
@@ -33,7 +33,7 @@ git_init(){
 	fi
 }
 
-# github仓库提交
+# 作用: github仓库提交
 git_commit(){
 	local COMMIT_FILES_COUNT=$(git status -s | wc -l)
 	local TODAY=$(date "+%F %T")
@@ -44,8 +44,8 @@ git_commit(){
 	fi
 }
 
-# 为了检查用户输入的镜像,如k8s.gcr.io/kube-proxy:v1.12.2转换为solomonlinux/gcr.io.kube-proxy:v1.12.2,用于检查我自己的仓库有没有
-# $1为用户提供的镜像名称,如k8s.gcr.io/kube-proxy:v1.12.2
+# 参数: $1为用户输入的镜像(检查本地有没有),如k8s.gcr.io/kube-proxy:v1.12.2
+# 作用: 为了检查用户输入的镜像转换为我本地的镜像,如k8s.gcr.io/kube-proxy:v1.12.2转换为solomonlinux/gcr.io.kube-proxy:v1.12.2
 image_tag_convert(){
 	local SRC_IMAGE=$1
 	local DEST_IMAGE="${DOCKERHUB_REPO_NAME}/$(echo ${SRC_IMAGE} | tr '/' '.')"
@@ -56,12 +56,18 @@ image_tag_convert(){
 # $1为镜像名称,如nginx,$2为镜像标签,如v1-test
 # 返回值为0表示镜像存在,为1表示镜像不存在
 # $1: image_name; $2: image_tag_name
+
+# 参数: $1为我本地镜像仓库的镜像名称,如solomonlinux/nginx:v1-test的nginx
+# 参数: $2为我本地镜像仓库镜像的标签,如solomonlinux/nginx:v1-test的v1-test
+
 image_tag_check(){
         local RESULT=$(curl -s https://hub.docker.com/v2/repositories/${DOCKERHUB_REPO_NAME}/$1/tags/$2/ | jq -r .name)
 	if [ "$RESULT" == "null" ]; then
-		echo failure
+		#echo failure
+		return 1
 	else
-		echo ok
+		#echo ok
+		return 0
 	fi
 }
 
@@ -72,7 +78,8 @@ sync_image(){
 		local IMAGE=$(echo $DEST_IMAGE | cut -d/ -f2 | cut -d: -f1)
 		local TAG=$(echo $DEST_IMAGE | cut -d: -f2)
 		
-		if [[ $(image_tag_check $IMAGE $TAG) == "failure" ]]; then
+		#if [[ $(image_tag_check $IMAGE $TAG) == "failure" ]]; then
+		if [[ $(image_tag_check $IMAGE $TAG) -eq 1 ]]; then
 			docker pull $SRC_IMAGE &> /dev/null
 			docker tag $SRC_IMAGE $DEST_IMAGE &> /dev/null
 			docker push $DEST_IMAGE &> /dev/null
