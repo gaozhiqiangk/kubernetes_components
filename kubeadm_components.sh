@@ -76,15 +76,14 @@ sync_image(){
 		
 		#if [[ $(image_tag_check $IMAGE $TAG) == "failure" ]]; then
 		if ! $(image_tag_check $IMAGE $TAG); then
-			echo "正在同步镜像($SRC_IMAGE)......"
 			docker pull $SRC_IMAGE &> /dev/null
 			docker tag $SRC_IMAGE $DEST_IMAGE &> /dev/null
 			docker rmi $SRC_IMAGE &> /dev/null
 			docker push $DEST_IMAGE &> /dev/null
 			docker rmi $DEST_IMAGE &> /dev/null
-			[ $? -eq 0 ] && echo "镜像(${SRC_IMAGE})已同步完成"
+			[ $? -eq 0 ] && echo "镜像(\033[31m${SRC_IMAGE}\033[0m)同步完成"
 		else
-			echo "镜像(${SRC_IMAGE})已存在"
+			echo "镜像(\033[32m${SRC_IMAGE}\033[0m)已存在"
 		fi	
 	done < <( cat $IMAGE_LIST_FILE | grep -v "^#" | grep -v "^$" )
 }
