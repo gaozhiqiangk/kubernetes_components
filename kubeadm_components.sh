@@ -87,7 +87,7 @@ sync_image(){
 		else
 			echo "${SRC_IMAGE}镜像已存在,不需要再次同步"
 		fi	
-	done < <( cat $IMAGE_LIST_FILE )
+	done < <( cat $IMAGE_LIST_FILE | grep -v "^#" )
 }
 
 main(){
