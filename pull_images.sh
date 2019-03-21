@@ -37,6 +37,7 @@ pull_image(){
         local IMAGE=$(echo $DEST_IMAGE | cut -d/ -f2 | cut -d: -f1)
         local TAG=$(echo $DEST_IMAGE | cut -d: -f2)
 
+	# 如果访问不到github,那么请注释下一行,并开启下下一行
         if ! $(image_tag_check $IMAGE $TAG); then
         #if ! true; then
 		echo -e "镜像(\033[5;31m${SRC_IMAGE}\033[0m)在远程不存在"
@@ -64,6 +65,6 @@ done
 if [ ! -z $(cat $NOIMAGEFILE) ]; then
 	echo -e "\n下列镜像不存在,请到github提交镜像"
 	cat $NOIMAGEFILE
-	echo -e "\033[5;31mhttps://github.com/solomonlinux/kubernetes_components/blob/master/kubeadm_components.txt <======\033[0m"
+	echo -e "\033[5;31mhttps://github.com/solomonlinux/kubernetes_components/blob/master/kubeadm_components.txt\033[0m<=="
 fi
 rm -rf $NOIMAGEFILE
