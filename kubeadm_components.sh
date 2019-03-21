@@ -81,9 +81,9 @@ sync_image(){
 			docker rmi $SRC_IMAGE &> /dev/null
 			docker push $DEST_IMAGE &> /dev/null
 			docker rmi $DEST_IMAGE &> /dev/null
-			[ $? -eq 0 ] && echo "镜像(\033[31m${SRC_IMAGE}\033[0m)同步完成"
+			[ $? -eq 0 ] && echo -e "镜像(\033[31m${SRC_IMAGE}\033[0m)同步完成"
 		else
-			echo "镜像(\033[32m${SRC_IMAGE}\033[0m)已存在"
+			echo -e "镜像(\033[32m${SRC_IMAGE}\033[0m)已存在"
 		fi	
 	done < <( cat $IMAGE_LIST_FILE | grep -v "^#" | grep -v "^$" )
 }
