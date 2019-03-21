@@ -64,10 +64,10 @@ image_tag_check(){
         local RESULT=$(curl -s https://hub.docker.com/v2/repositories/${DOCKERHUB_REPO_NAME}/$1/tags/$2/ | jq -r .name)
 	if [ "$RESULT" == "null" ]; then
 		#echo failure
-		return 1
+		return "1"
 	else
 		#echo ok
-		return 0
+		return "0"
 	fi
 }
 
