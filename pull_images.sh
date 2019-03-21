@@ -64,6 +64,6 @@ done
 if [ ! -z $(cat $NOIMAGEFILE) ]; then
 	echo -e "\n下列镜像不存在,请到github提交镜像"
 	cat $NOIMAGEFILE
-	echo -e "==>\033[5;31mhttps://github.com/solomonlinux/kubernetes_components/blob/master/kubeadm_components.txt\033[0m<=="
+	echo -e "\033[5;31mhttps://github.com/solomonlinux/kubernetes_components/blob/master/kubeadm_components.txt <======\033[0m"
 fi
 rm -rf $NOIMAGEFILE
