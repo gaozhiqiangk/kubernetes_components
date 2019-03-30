@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=v1.13.4
+VERSION=v1.14.0
 MASTER_COMPONENTS='k8s.gcr.io/kube-apiserver:v1.14.0
 k8s.gcr.io/kube-controller-manager:v1.14.0
 k8s.gcr.io/kube-scheduler:v1.14.0
