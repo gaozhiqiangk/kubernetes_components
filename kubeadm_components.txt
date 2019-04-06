@@ -32,3 +32,4 @@ gcr.io/kubernetes-helm/tiller:v2.12.3
 quay.io/pires/docker-elasticsearch-kubernetes:6.4.2
 docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.0
 docker.elastic.co/kibana/kibana-oss:6.7.0
+gcr.io/google_samples/k8szk:v3
